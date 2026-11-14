@@ -394,6 +394,13 @@ export function registerIpc(): void {
     git.createTag(repo, name, target, message)
   )
   handle(CH.tagDelete, (repo: string, name: string, remote?: string) => git.deleteTag(repo, name, remote))
+  handle(CH.tagPush, (repo: string, name: string, remote?: string) =>
+    withProgress(repo, `推送标签 ${name}`, () => git.pushTag(repo, name, remote))
+  )
+  handle(CH.tagPushAll, (repo: string, remote?: string) =>
+    withProgress(repo, '推送全部标签', () => git.pushAllTags(repo, remote))
+  )
+  handle(CH.tagFetch, (repo: string) => withProgress(repo, '拉取标签', () => git.fetchTags(repo)))
 
   /* --------------------------------------------------------- history */
   handle(CH.checkoutCommit, (repo: string, hash: string) => git.checkoutCommit(repo, hash))

@@ -51,5 +51,5 @@ nsis:
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
   language: 2052
-  artifactName: MiaoxinGitGUI-${version}-setup.exe
+  artifactName: MiaoxinGitGUI-${version}-for-Windows-setup.exe
   differentialPackage: false

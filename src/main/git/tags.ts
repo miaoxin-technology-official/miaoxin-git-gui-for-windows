@@ -1,6 +1,7 @@
-import type { TagInfo } from '@shared/types'
+import type { OperationResult, TagInfo } from '@shared/types'
 import { decodeLines } from './encoding'
-import { assertSafeRef, NETWORK_TIMEOUT, runGitOk } from './exec'
+import { assertSafeRef, NETWORK_TIMEOUT, runGit, runGitOk } from './exec'
+import { toOperationResult } from './ops'
 
 /**
  * Tags via `for-each-ref refs/tags`. Annotated tags expose their tagger and
@@ -97,4 +98,28 @@ export async function deleteTag(repo: string, name: string, remote?: string): Pr
     )
   }
   await runGitOk(['tag', '-d', safeName], { cwd: repo }, `无法删除标签 ${safeName}`)
+}
+
+/** Push a single tag to a remote (`git push <remote> refs/tags/<name>`). */
+export async function pushTag(repo: string, name: string, remote = 'origin'): Promise<OperationResult> {
+  const safeName = assertTagName(name)
+  const safeRemote = assertSafeRef(remote, '远程名称')
+  const result = await runGit(['push', safeRemote, `refs/tags/${safeName}`], {
+    cwd: repo,
+    timeoutMs: NETWORK_TIMEOUT
+  })
+  return toOperationResult(result)
+}
+
+/** Push every local tag to a remote (`git push <remote> --tags`). */
+export async function pushAllTags(repo: string, remote = 'origin'): Promise<OperationResult> {
+  const safeRemote = assertSafeRef(remote, '远程名称')
+  const result = await runGit(['push', safeRemote, '--tags'], { cwd: repo, timeoutMs: NETWORK_TIMEOUT })
+  return toOperationResult(result)
+}
+
+/** Fetch tags from all remotes (`git fetch --tags`). */
+export async function fetchTags(repo: string): Promise<OperationResult> {
+  const result = await runGit(['fetch', '--tags'], { cwd: repo, timeoutMs: NETWORK_TIMEOUT })
+  return toOperationResult(result)
 }

@@ -119,7 +119,10 @@ const api: ArborApi = {
     list: (path: string) => ipcRenderer.invoke(CH.tagList, path),
     create: (path: string, name: string, target?: string, message?: string) =>
       ipcRenderer.invoke(CH.tagCreate, path, name, target, message),
-    delete: (path: string, name: string, remote?: string) => ipcRenderer.invoke(CH.tagDelete, path, name, remote)
+    delete: (path: string, name: string, remote?: string) => ipcRenderer.invoke(CH.tagDelete, path, name, remote),
+    push: (path: string, name: string, remote?: string) => ipcRenderer.invoke(CH.tagPush, path, name, remote),
+    pushAll: (path: string, remote?: string) => ipcRenderer.invoke(CH.tagPushAll, path, remote),
+    fetch: (path: string) => ipcRenderer.invoke(CH.tagFetch, path)
   },
   history: {
     checkoutCommit: (path: string, hash: string) => ipcRenderer.invoke(CH.checkoutCommit, path, hash),

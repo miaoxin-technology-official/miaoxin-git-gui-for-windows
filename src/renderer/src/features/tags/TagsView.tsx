@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Copy, MoreHorizontal, Plus, RefreshCw, Search, Tag, Trash2, X } from 'lucide-react'
+import { Copy, Download, MoreHorizontal, Plus, RefreshCw, Search, Tag, Trash2, Upload, X } from 'lucide-react'
 import type { TagInfo } from '@shared/types'
 import { api, errorMessage } from '@/lib/api'
 import { absoluteTime, hash7, relativeTime } from '@/lib/format'
@@ -114,6 +114,14 @@ export default function TagsView(): React.JSX.Element {
 
   function menuItems(tag: TagInfo): MenuItem[] {
     const items: MenuItem[] = [{ id: 'copy', label: '复制标签名', icon: Copy }, { id: 'sep-1', separator: true }]
+    for (const remote of remotes) {
+      items.push({
+        id: `push-remote:${remote.name}`,
+        label: `推送标签到 ${remote.name}`,
+        icon: Upload,
+        disabled: Boolean(busy)
+      })
+    }
     items.push({ id: 'delete-local', label: '删除本地标签', icon: Trash2, danger: true, disabled: Boolean(busy) })
     for (const remote of remotes) {
       items.push({
@@ -132,12 +140,69 @@ export default function TagsView(): React.JSX.Element {
       void copyText(tag.name, '已复制标签名')
       return
     }
+    if (id.startsWith('push-remote:')) {
+      void performPush(tag, id.slice('push-remote:'.length))
+      return
+    }
     if (id === 'delete-local') {
       requestDelete(tag, null)
       return
     }
     if (id.startsWith('delete-remote:')) {
       requestDelete(tag, id.slice('delete-remote:'.length))
+    }
+  }
+
+  function resultError(result: { stderr: string; output: string }): string {
+    const lines = (result.stderr || result.output || '').trim().split(/\r?\n/).filter(Boolean)
+    return lines[lines.length - 1] ?? '操作失败'
+  }
+
+  async function performPush(tag: TagInfo, remote: string): Promise<void> {
+    if (!repoPath || busy) return
+    setBusy(true)
+    try {
+      const result = await api.tags.push(repoPath, tag.name, remote)
+      if (!result.ok) {
+        toast(resultError(result), 'error')
+      } else {
+        toast(`已推送标签 ${tag.name} 到 ${remote}`, 'success')
+      }
+      await refresh()
+    } catch (error) {
+      toast(errorMessage(error), 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function performPushAll(remote: string): Promise<void> {
+    if (!repoPath || busy) return
+    setBusy(true)
+    try {
+      const result = await api.tags.pushAll(repoPath, remote)
+      if (!result.ok) toast(resultError(result), 'error')
+      else toast(`已推送全部标签到 ${remote}`, 'success')
+      await refresh()
+    } catch (error) {
+      toast(errorMessage(error), 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function performFetchTags(): Promise<void> {
+    if (!repoPath || busy) return
+    setBusy(true)
+    try {
+      const result = await api.tags.fetch(repoPath)
+      if (!result.ok) toast(resultError(result), 'error')
+      else toast('已拉取远程标签', 'success')
+      await refresh()
+    } catch (error) {
+      toast(errorMessage(error), 'error')
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -176,6 +241,26 @@ export default function TagsView(): React.JSX.Element {
         >
           <RefreshCw size={14} strokeWidth={1.7} className={cn(tags.loading && 'arb-spin')} />
         </button>
+        <Button
+          variant="secondary"
+          size="sm"
+          icon={Download}
+          disabled={remotes.length === 0 || busy}
+          title="从远程拉取标签"
+          onClick={() => void performFetchTags()}
+        >
+          拉取标签
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          icon={Upload}
+          disabled={remotes.length === 0 || busy}
+          title="推送全部本地标签到远程"
+          onClick={() => void performPushAll(remotes[0].name)}
+        >
+          推送全部标签
+        </Button>
         <Button
           variant="primary"
           size="sm"

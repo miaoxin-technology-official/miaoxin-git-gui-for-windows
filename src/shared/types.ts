@@ -476,6 +476,9 @@ export interface ArborApi {
     list(path: string): Promise<TagInfo[]>
     create(path: string, name: string, target?: string, message?: string): Promise<void>
     delete(path: string, name: string, remote?: string): Promise<void>
+    push(path: string, name: string, remote?: string): Promise<OperationResult>
+    pushAll(path: string, remote?: string): Promise<OperationResult>
+    fetch(path: string): Promise<OperationResult>
   }
   history: {
     checkoutCommit(path: string, hash: string): Promise<void>

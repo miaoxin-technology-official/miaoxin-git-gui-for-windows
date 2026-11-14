@@ -73,6 +73,9 @@ export const CH = {
   tagList: 'git:tag-list',
   tagCreate: 'git:tag-create',
   tagDelete: 'git:tag-delete',
+  tagPush: 'git:tag-push',
+  tagPushAll: 'git:tag-push-all',
+  tagFetch: 'git:tag-fetch',
 
   checkoutCommit: 'git:checkout-commit',
   reset: 'git:reset',

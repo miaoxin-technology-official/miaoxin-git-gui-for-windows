@@ -61,7 +61,7 @@ import {
 } from './ops'
 import { addRemote, fetch, pull, push, readRemotes, removeRemote, renameRemote, setRemoteUrl } from './remotes'
 import { stashApply, stashCount, stashDrop, stashList, stashPop, stashSave } from './stash'
-import { createTag, deleteTag, readTags } from './tags'
+import { createTag, deleteTag, fetchTags, pushAllTags, pushTag, readTags } from './tags'
 import { applyHunk } from './patch'
 
 /**
@@ -136,6 +136,9 @@ export interface GitService {
   tags(path: string): Promise<TagInfo[]>
   createTag(path: string, name: string, target?: string, message?: string): Promise<void>
   deleteTag(path: string, name: string, remote?: string): Promise<void>
+  pushTag(path: string, name: string, remote?: string): Promise<OperationResult>
+  pushAllTags(path: string, remote?: string): Promise<OperationResult>
+  fetchTags(path: string): Promise<OperationResult>
 
   checkoutCommit(path: string, hash: string): Promise<void>
   reset(path: string, hash: string, mode: 'soft' | 'mixed' | 'hard'): Promise<void>
@@ -548,6 +551,21 @@ class GitServiceImpl implements GitService {
   async deleteTag(repo: string, name: string, remote?: string): Promise<void> {
     const root = await resolveRoot(repo)
     await deleteTag(root, name, remote)
+  }
+
+  async pushTag(repo: string, name: string, remote?: string): Promise<OperationResult> {
+    const root = await resolveRoot(repo)
+    return pushTag(root, name, remote)
+  }
+
+  async pushAllTags(repo: string, remote?: string): Promise<OperationResult> {
+    const root = await resolveRoot(repo)
+    return pushAllTags(root, remote)
+  }
+
+  async fetchTags(repo: string): Promise<OperationResult> {
+    const root = await resolveRoot(repo)
+    return fetchTags(root)
   }
 
   async checkoutCommit(repo: string, hash: string): Promise<void> {

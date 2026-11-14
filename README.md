@@ -43,7 +43,7 @@ Windows 11 的智能应用控制会阻止未签名/信誉未知的安装包。�
 下载后建议先核对 SHA256（Windows PowerShell）：
 
 ```powershell
-Get-FileHash .\MiaoxinGitGUI-<version>-setup.exe -Algorithm SHA256
+Get-FileHash .\MiaoxinGitGUI-<version>-for-Windows-setup.exe -Algorithm SHA256
 ```
 
 与 Release 页面公布的校验值一致后再安装。
@@ -93,7 +93,7 @@ Get-FileHash .\MiaoxinGitGUI-<version>-setup.exe -Algorithm SHA256
 npm run dev        # 开发模式（electron-vite dev，含 HMR）
 npm run typecheck  # tsc --noEmit（node + web 两个 project）
 npm run build      # 构建到 out/
-npm run pack       # NSIS 安装包（内置 Git）-> release/MiaoxinGitGUI-1.4.0-setup.exe
+npm run pack       # NSIS 安装包（内置 Git）-> release/MiaoxinGitGUI-1.4.1-for-Windows-setup.exe
 ```
 
 在 DSH 受管 shell 等受限/高权限会话中验证界面时，需要
@@ -104,7 +104,7 @@ npm run pack       # NSIS 安装包（内置 Git）-> release/MiaoxinGitGUI-1.4.
 
 ```powershell
 npm run build      # 构建到 out/
-npm run pack       # NSIS 安装包（内置 Git）-> release/MiaoxinGitGUI-<version>-setup.exe
+npm run pack       # NSIS 安装包（内置 Git）-> release/MiaoxinGitGUI-<version>-for-Windows-setup.exe
 ```
 
 构建离线进行：`electron-builder.yml` 的 `electronDist` 指向 `node_modules/electron/dist`，
