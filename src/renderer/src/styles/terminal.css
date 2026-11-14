@@ -1,0 +1,233 @@
+/* ==========================================================================
+   Embedded Git Bash console (right side panel)
+   ========================================================================== */
+
+.arb-terminal {
+  flex: 0 0 auto;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  position: relative;
+  min-height: 0;
+}
+
+.arb-terminal.is-hidden {
+  display: none;
+}
+
+.arb-terminal-resizer {
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 3;
+}
+
+.arb-terminal-resizer:hover {
+  background: var(--accent-soft);
+}
+
+.arb-terminal-hd {
+  height: 30px;
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 6px 0 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+
+.arb-terminal-icon {
+  color: var(--text-3);
+  flex: 0 0 auto;
+}
+
+.arb-terminal-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  flex: 0 0 auto;
+}
+
+.arb-terminal-cwd {
+  flex: 1;
+  min-width: 0;
+  font-size: 9.5px;
+  color: var(--text-3);
+  direction: rtl;
+  text-align: left;
+}
+
+.arb-terminal-actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex: 0 0 auto;
+}
+
+.arb-terminal-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: var(--bg-panel);
+  padding: 6px 8px 4px;
+}
+
+.arb-terminal-xterm {
+  height: 100%;
+  min-height: 0;
+}
+
+.arb-terminal-xterm .xterm {
+  height: 100%;
+}
+
+.arb-terminal-xterm .xterm-viewport {
+  scrollbar-width: thin;
+}
+
+.arb-terminal-exit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  color: var(--text-3);
+  background: var(--bg-elev);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.arb-terminal-hint {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elev);
+  font-size: 9.5px;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+}
+
+.arb-terminal-hint span {
+  white-space: nowrap;
+}
+
+.arb-terminal-hint-right {
+  margin-left: auto;
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------- context menu */
+
+.arb-terminal-menu {
+  position: absolute;
+  z-index: 20;
+  min-width: 178px;
+  padding: 3px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop);
+}
+
+.arb-terminal-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 25px;
+  padding: 0 7px;
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.arb-terminal-menu-item:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.arb-terminal-menu-item:disabled {
+  opacity: 0.4;
+}
+
+.arb-terminal-menu-icon {
+  width: 13px;
+  flex: 0 0 13px;
+}
+
+.arb-terminal-menu-shortcut {
+  margin-left: auto;
+  font-size: 9.5px;
+  color: var(--text-3);
+}
+
+.arb-terminal-menu-sep {
+  height: 1px;
+  margin: 3px 2px;
+  background: var(--border-subtle);
+}
+
+.arb-terminal-input-row {
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+
+.arb-terminal-prompt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.arb-terminal-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  user-select: text;
+}
+
+.arb-terminal-input::placeholder {
+  color: var(--text-3);
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+}
+
+.arb-term-link,
+.arb-link {
+  color: var(--accent);
+  font-size: 10.5px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .arb-terminal {
+    display: none;
+  }
+}

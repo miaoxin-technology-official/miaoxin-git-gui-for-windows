@@ -1,0 +1,55 @@
+# -*- coding: utf-8 -*-
+# Miaoxin Git GUI build configuration
+
+appId: com.miaoxin.gitgui
+productName: Miaoxin Git GUI
+copyright: Copyright © 2026 Miaoxin Technology
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - LICENSE
+  - THIRD-PARTY-NOTICES.md
+
+extraResources:
+  - from: vendor/git
+    to: git
+  - from: build/icon.png
+    to: icon.png
+
+asar: true
+npmRebuild: false
+electronVersion: 33.3.1
+# The Electron 33.3.1 binary was unpacked by hand into node_modules/electron/dist
+# because the official download TLS handshake fails on this machine.
+# Never let electron-builder download or extract Electron again.
+electronDist: node_modules/electron/dist
+# Keep the builder cache offline-reusable (NSIS, winCodeSign, 7zip).
+# Default location is %LOCALAPPDATA%\electron-builder\Cache, overridable with
+# the ELECTRON_BUILDER_CACHE environment variable (see docs/BUILD.md).
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+  executableName: MiaoxinGitGUI
+  requestedExecutionLevel: asInvoker
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Miaoxin Git GUI
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  language: 2052
+  artifactName: MiaoxinGitGUI-${version}-setup.exe
+  differentialPackage: false

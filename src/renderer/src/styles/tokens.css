@@ -1,0 +1,171 @@
+/* ==========================================================================
+   Miaoxin Git GUI — design tokens
+   A warm, ink-and-paper workbench: near-black warm greys, one copper accent,
+   hairlines instead of shadows, system typography instead of web fonts.
+   ========================================================================== */
+
+:root {
+  --font-ui: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
+    'PingFang SC', system-ui, sans-serif;
+  --font-mono: 'Cascadia Mono', 'Cascadia Code', Consolas, 'Courier New', ui-monospace, monospace;
+
+  --text-xs: 10.5px;
+  --text-sm: 11.5px;
+  --text-md: 12.5px;
+  --text-lg: 14px;
+  --text-xl: 16px;
+  --text-2xl: 19px;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+
+  --row-h: 28px;
+  --titlebar-h: 34px;
+  --tabbar-h: 34px;
+  --statusbar-h: 24px;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur-fast: 90ms;
+  --dur: 140ms;
+
+  --shadow-pop: 0 6px 18px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 18%);
+  --shadow-modal: 0 18px 48px rgb(0 0 0 / 36%), 0 2px 6px rgb(0 0 0 / 22%);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent-border);
+  --z-pop: 40;
+  --z-modal: 60;
+  --z-toast: 80;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #11100f;
+  --bg-elev: #151412;
+  --bg-panel: #181715;
+  --bg-inset: #0d0c0b;
+  --bg-hover: #1f1d1a;
+  --bg-active: #26231f;
+  --bg-selected: #2a241d;
+  --bg-input: #121110;
+
+  --border: #26231e;
+  --border-strong: #37322b;
+  --border-subtle: #1e1c18;
+
+  --text: #e9e4d9;
+  --text-2: #a9a296;
+  --text-3: #756f64;
+  --text-inverse: #11100f;
+
+  --accent: #c4763f;
+  --accent-hover: #d4864e;
+  --accent-active: #b2683a;
+  --accent-text: #17130f;
+  --accent-soft: rgb(196 118 63 / 14%);
+  --accent-border: rgb(196 118 63 / 42%);
+
+  --green: #7ba05b;
+  --green-soft: rgb(123 160 91 / 13%);
+  --amber: #c9a227;
+  --amber-soft: rgb(201 162 39 / 13%);
+  --red: #c4584f;
+  --red-soft: rgb(196 88 79 / 13%);
+  --blue: #7c95b8;
+  --blue-soft: rgb(124 149 184 / 13%);
+  --violet: #9c7ba0;
+  --violet-soft: rgb(156 123 160 / 13%);
+
+  --diff-add-bg: rgb(123 160 91 / 11%);
+  --diff-add-gutter: rgb(123 160 91 / 20%);
+  --diff-add-word: rgb(123 160 91 / 24%);
+  --diff-del-bg: rgb(196 88 79 / 11%);
+  --diff-del-gutter: rgb(196 88 79 / 20%);
+  --diff-del-word: rgb(196 88 79 / 24%);
+  --diff-hunk: rgb(196 118 63 / 8%);
+
+  --graph-1: #b46a4a;
+  --graph-2: #7c8b5a;
+  --graph-3: #b99a4e;
+  --graph-4: #6b7f96;
+  --graph-5: #8c6e86;
+  --graph-6: #5f8c7d;
+  --graph-7: #9a7656;
+  --graph-8: #7a7a83;
+
+  --scroll-thumb: #2c2823;
+  --scroll-thumb-hover: #423b32;
+  --backdrop: rgb(8 7 6 / 58%);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f2efe7;
+  --bg-elev: #f7f4ed;
+  --bg-panel: #fbf9f4;
+  --bg-inset: #ede9e0;
+  --bg-hover: #eae5da;
+  --bg-active: #e2dbcc;
+  --bg-selected: #f0e4d3;
+  --bg-input: #fefdfa;
+
+  --border: #dcd5c7;
+  --border-strong: #c6bcab;
+  --border-subtle: #e7e1d5;
+
+  --text: #211e19;
+  --text-2: #5e5749;
+  --text-3: #8b8375;
+  --text-inverse: #fbf9f4;
+
+  --accent: #a9552c;
+  --accent-hover: #964a26;
+  --accent-active: #844020;
+  --accent-text: #fdf9f4;
+  --accent-soft: rgb(169 85 44 / 10%);
+  --accent-border: rgb(169 85 44 / 36%);
+
+  --green: #4f7a3a;
+  --green-soft: rgb(79 122 58 / 10%);
+  --amber: #8a6a0e;
+  --amber-soft: rgb(138 106 14 / 10%);
+  --red: #a8453d;
+  --red-soft: rgb(168 69 61 / 9%);
+  --blue: #476c94;
+  --blue-soft: rgb(71 108 148 / 9%);
+  --violet: #7a5c80;
+  --violet-soft: rgb(122 92 128 / 9%);
+
+  --diff-add-bg: #ebf3e3;
+  --diff-add-gutter: #d9e8cc;
+  --diff-add-word: #c4dcb2;
+  --diff-del-bg: #fae9e5;
+  --diff-del-gutter: #f2d5cf;
+  --diff-del-word: #e8bdb5;
+  --diff-hunk: #f5ede2;
+
+  --graph-1: #9c5436;
+  --graph-2: #63703f;
+  --graph-3: #94762a;
+  --graph-4: #51657c;
+  --graph-5: #755a6f;
+  --graph-6: #467264;
+  --graph-7: #7c5c40;
+  --graph-8: #616168;
+
+  --scroll-thumb: #cbc3b4;
+  --scroll-thumb-hover: #aea593;
+  --backdrop: rgb(30 26 20 / 34%);
+}
+
+[data-density='compact'] {
+  --row-h: 25px;
+  --text-md: 12px;
+}
+
+html {
+  font-size: calc(100% * var(--ui-scale, 1));
+}

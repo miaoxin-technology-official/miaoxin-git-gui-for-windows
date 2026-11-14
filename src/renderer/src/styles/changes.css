@@ -1,0 +1,378 @@
+/* ==========================================================================
+   Changes view — file list, groups, commit editor
+   ========================================================================== */
+
+.changes-view {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.changes-conflict-bar {
+  flex: 0 0 auto;
+  padding: 6px 8px 0;
+}
+
+.changes-left {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------- toolbar */
+
+.changes-toolbar {
+  flex: 0 0 auto;
+  gap: 2px;
+  min-height: 32px;
+  padding: 0 6px;
+}
+
+.changes-toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.changes-toolbar-count {
+  font-size: 10.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+  padding-right: 2px;
+}
+
+.is-spinning svg {
+  animation: arb-rotate 0.9s linear infinite;
+}
+
+/* ------------------------------------------------------------------ list */
+
+.changes-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.changes-view--clean {
+  justify-content: center;
+}
+
+.changes-clean-empty {
+  flex: 1;
+}
+
+.changes-clean-empty .empty-desc {
+  max-width: 380px;
+}
+
+.changes-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.changes-group-hd {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 4px 0 8px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  outline: none;
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.changes-group-hd:hover {
+  background: var(--bg-hover);
+}
+
+.changes-group-hd:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+.changes-group-chevron {
+  flex: 0 0 auto;
+  color: var(--text-3);
+}
+
+.changes-group-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-2);
+}
+
+.changes-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-active);
+  color: var(--text-3);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.changes-group-stats {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  font-size: 10.5px;
+}
+
+.changes-group-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.changes-group-hd:hover .changes-group-actions,
+.changes-group-hd:focus-within .changes-group-actions {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------- rows */
+
+.changes-row {
+  padding: 0 8px 0 9px;
+  gap: 6px;
+  outline: none;
+}
+
+.changes-row.is-selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--accent);
+}
+
+.changes-row.is-active::before {
+  background: var(--accent);
+}
+
+.changes-row .status-letter {
+  font-size: 10px;
+}
+
+.changes-row.is-selected:not(.is-active) {
+  background: var(--bg-hover);
+}
+
+.changes-row-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.changes-row-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.changes-row-dir {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  text-align: left;
+}
+
+.changes-row-stat {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 5px;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.changes-row-actions {
+  flex: 0 0 auto;
+}
+
+.changes-row-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  color: var(--text-3);
+  outline: none;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.changes-row-more:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.changes-row-more:active {
+  background: var(--bg-active);
+}
+
+.changes-row-more:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.changes-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  outline: none;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.changes-mini-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+  border-color: var(--text-3);
+}
+
+.changes-mini-btn:active {
+  background: var(--bg-active);
+}
+
+.changes-mini-btn:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* --------------------------------------------------------- commit editor */
+
+.changes-commit {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 10px 11px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+
+/* borderless editor strip: no field chrome, just text on the panel */
+.changes-commit-input {
+  width: 100%;
+  height: auto;
+  min-height: 88px;
+  max-height: 208px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.55;
+  resize: none;
+  outline: none;
+  overflow-y: auto;
+}
+
+.changes-commit-input::placeholder {
+  color: var(--text-3);
+  opacity: 0.9;
+}
+
+.changes-commit-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.changes-commit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.changes-commit-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.changes-commit-count {
+  font-size: 10.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.changes-commit-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------- discard dialog */
+
+.changes-discard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.changes-discard p {
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.changes-discard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 140px;
+  margin: 0;
+  padding: 6px 8px;
+  list-style: none;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+}
+
+.changes-discard-list li {
+  font-size: var(--text-xs);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.changes-discard-note {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}

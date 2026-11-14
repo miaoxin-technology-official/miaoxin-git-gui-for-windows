@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Miaoxin Git GUI">
+  <title>Miaoxin Git GUI</title>
+  <rect x="0.5" y="0.5" width="1023" height="1023" rx="199.5" fill="#141210" stroke="#E9E4D9" stroke-opacity="0.12"/>
+  <g fill="none" stroke="#C4763F" stroke-width="52" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M376 300V724"/>
+    <path d="M376 560L648 424"/>
+  </g>
+  <circle cx="376" cy="300" r="78" fill="#C4763F"/>
+  <circle cx="376" cy="724" r="78" fill="#C4763F"/>
+  <circle cx="648" cy="424" r="78" fill="#E9E4D9"/>
+</svg>

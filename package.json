@@ -1,0 +1,41 @@
+{
+  "name": "miaoxin-git-gui",
+  "productName": "Miaoxin Git GUI",
+  "version": "1.4.0",
+  "description": "Miaoxin Git GUI: a local-first Git desktop client for Windows",
+  "main": "./out/main/index.js",
+  "author": {
+    "name": "Miaoxin Technology",
+    "email": "support@miaoxin.local"
+  },
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "pack:dir": "electron-vite build && electron-builder --win --x64 --dir",
+    "pack": "electron-vite build && electron-builder --win nsis --x64",
+    "pack:portable": "electron-vite build && electron-builder --win portable --x64",
+    "shoot": "node scripts/shoot.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "@xterm/addon-fit": "0.10.0",
+    "@xterm/xterm": "5.5.0",
+    "electron": "33.3.1",
+    "electron-builder": "25.1.8",
+    "electron-vite": "3.1.0",
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tsx": "4.23.15",
+    "typescript": "5.7.2",
+    "vite": "6.0.7",
+    "zustand": "5.0.2"
+  }
+}
