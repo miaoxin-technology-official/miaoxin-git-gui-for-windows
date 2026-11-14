@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * Miaoxin Git GUI — git backend smoke test.
  *

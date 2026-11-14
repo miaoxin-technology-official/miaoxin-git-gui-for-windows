@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
 import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
@@ -25,9 +26,46 @@ import { applyTheme, effectiveTheme } from './theme'
 import { getMainWindow, sendToRenderer } from './window'
 import { repoWatcher } from './watcher'
 import { terminalManager } from './terminal'
-import { checkForUpdates, releaseUrl } from './updates'
+import { checkForUpdates, downloadUpdate, releaseUrl } from './updates'
 
 const git = createGitService()
+
+/* ----------------------------------------------------------------- cache */
+
+const CACHE_SUBDIRS = ['Cache', 'GPUCache', 'Code Cache', 'DawnCache', 'DawnGraphiteCache', 'DawnWebGPUCache', 'logs']
+
+function dirBytes(dir: string): number {
+  let total = 0
+  try {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name)
+      try {
+        total += entry.isDirectory() ? dirBytes(full) : fs.statSync(full).size
+      } catch {
+        /* skip locked files */
+      }
+    }
+  } catch {
+    return total
+  }
+  return total
+}
+
+function cacheBytes(): number {
+  const root = app.getPath('userData')
+  return CACHE_SUBDIRS.reduce((sum, name) => sum + dirBytes(path.join(root, name)), 0)
+}
+
+function clearAppCache(): void {
+  const root = app.getPath('userData')
+  for (const name of CACHE_SUBDIRS) {
+    try {
+      fs.rmSync(path.join(root, name), { recursive: true, force: true })
+    } catch {
+      /* locked cache files are harmless */
+    }
+  }
+}
 
 /* -------------------------------------------------------------------- ssh */
 
@@ -201,6 +239,11 @@ export function registerIpc(): void {
     fs.mkdirSync(logsDir(), { recursive: true })
     await shell.openPath(logsDir())
   })
+  handle(CH.appCacheInfo, () => ({ bytes: cacheBytes(), userData: app.getPath('userData') }))
+  handle(CH.appClearCache, () => {
+    clearAppCache()
+    return { bytes: cacheBytes(), userData: app.getPath('userData') }
+  })
 
   /* -------------------------------------------------------- settings */
   handle(CH.settingsGet, () => store.get())
@@ -260,6 +303,7 @@ export function registerIpc(): void {
     if (!tag || typeof tag !== 'string') throw new Error('无效的版本标签')
     await shell.openExternal(releaseUrl(tag))
   })
+  handle(CH.updatesDownload, (tag: string) => downloadUpdate(tag))
 
   /* ------------------------------------------------------------ repos */
   handle(CH.reposOpenDialog, async () => {

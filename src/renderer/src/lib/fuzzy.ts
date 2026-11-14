@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 export interface FuzzyResult {
   score: number
   ranges: Array<[number, number]>

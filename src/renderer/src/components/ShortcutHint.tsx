@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { shortcutLabel } from '@/lib/useHotkeys'
 
 /** Renders a keyboard shortcut as a sequence of key caps. */

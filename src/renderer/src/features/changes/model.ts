@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { ChangeSide, FileChange, StatusSnapshot } from '@shared/types'
 
 /** One selectable row of the Changes list. A file can appear twice (staged + unstaged). */

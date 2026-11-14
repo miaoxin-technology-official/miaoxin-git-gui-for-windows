@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { forwardRef, useId } from 'react'
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react'
 import { ChevronDown, type LucideIcon } from 'lucide-react'

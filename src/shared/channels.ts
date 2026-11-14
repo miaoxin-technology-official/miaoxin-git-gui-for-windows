@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /** IPC channel names. Keep in sync with src/main/ipc.ts and src/preload/index.ts. */
 export const CH = {
   appInfo: 'app:info',
@@ -9,6 +10,8 @@ export const CH = {
   appClipboardWrite: 'app:clipboard-write',
   appClipboardRead: 'app:clipboard-read',
   appOpenLogs: 'app:open-logs',
+  appCacheInfo: 'app:cache-info',
+  appClearCache: 'app:clear-cache',
 
   settingsGet: 'settings:get',
   settingsSet: 'settings:set',
@@ -98,6 +101,7 @@ export const CH = {
 
   updatesCheck: 'updates:check',
   updatesOpenTag: 'updates:open-tag',
+  updatesDownload: 'updates:download',
 
   evtProgress: 'event:progress',
   evtRepoChanged: 'event:repo-changed',

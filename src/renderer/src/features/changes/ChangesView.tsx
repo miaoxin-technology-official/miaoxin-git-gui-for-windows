@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 import type { ChangeSide, DiffResult } from '@shared/types'

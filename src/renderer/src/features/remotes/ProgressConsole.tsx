@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useRef } from 'react'
 import { ChevronDown, ChevronUp, Terminal } from 'lucide-react'
 import { cn } from '@/lib/cn'

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { Commit, FileChangeStat, FileStatus, LogQuery, LogResult, RefInfo } from '@shared/types'
 import { decodeSmart, splitBuffer } from './encoding'
 import { assertSafeRef, gitFailure, isEmptyRepoLogError, runGit, runGitOk } from './exec'

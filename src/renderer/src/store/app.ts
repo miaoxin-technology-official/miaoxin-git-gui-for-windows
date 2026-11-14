@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { create } from 'zustand'
 import type { AppInfo, CloneOptions, RecentRepo, RepoSummary, Settings, StatusSnapshot, UpdateCheckResult } from '@shared/types'
 import { api, errorMessage } from '@/lib/api'
@@ -9,6 +10,36 @@ export interface ToastItem {
   id: number
   message: string
   kind: ToastKind
+}
+
+export interface NotificationItem {
+  id: number
+  title: string
+  detail?: string
+  kind: ToastKind
+  time: number
+  read: boolean
+}
+
+const NOTIFICATION_KEY = 'miaoxin.notifications.v1'
+
+function loadNotifications(): NotificationItem[] {
+  try {
+    const raw = window.localStorage.getItem(NOTIFICATION_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as NotificationItem[]
+    return Array.isArray(parsed) ? parsed.slice(0, 200) : []
+  } catch {
+    return []
+  }
+}
+
+function saveNotifications(items: NotificationItem[]): void {
+  try {
+    window.localStorage.setItem(NOTIFICATION_KEY, JSON.stringify(items.slice(0, 200)))
+  } catch {
+    /* storage full: notifications are best-effort */
+  }
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -64,7 +95,10 @@ interface AppState {
   terminalOpen: boolean
   updateInfo: UpdateCheckResult | null
   updateChecking: boolean
+  updateDownloading: boolean
+  updateDismissedTag: string | null
   lastUpdateCheck: number
+  notifications: NotificationItem[]
   toasts: ToastItem[]
 
   bootstrap: () => Promise<void>
@@ -80,13 +114,17 @@ interface AppState {
   setSettings: (patch: Partial<Settings>) => Promise<void>
   clearCache: () => Promise<void>
   checkUpdates: (silent?: boolean) => Promise<void>
+  downloadUpdate: () => Promise<void>
+  dismissUpdate: () => void
+  markNotificationsRead: () => void
+  clearNotifications: () => void
   setPaletteOpen: (open: boolean) => void
   setSettingsOpen: (open: boolean) => void
   setCloneOpen: (open: boolean) => void
   setInitOpen: (open: boolean) => void
   toggleSidebar: () => void
   toggleTerminal: () => void
-  pushToast: (message: string, kind?: ToastKind) => void
+  pushToast: (message: string, kind?: ToastKind, detail?: string) => void
   dismissToast: (id: number) => void
 }
 
@@ -110,7 +148,10 @@ export const useAppStore = create<AppState>()((set, get) => ({
   terminalOpen: true,
   updateInfo: null,
   updateChecking: false,
+  updateDownloading: false,
+  updateDismissedTag: window.localStorage.getItem('miaoxin.updateDismissed'),
   lastUpdateCheck: 0,
+  notifications: loadNotifications(),
   toasts: [],
 
   bootstrap: async () => {
@@ -275,19 +316,26 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set({ settings })
       applyAppearance(settings)
       void api.app.setTheme(settings.theme)
+      const keys = Object.keys(patch)
+      get().pushToast('设置已更新', 'success', `修改项：${keys.join('、') || '无'}`)
     } catch (error) {
-      get().pushToast(errorMessage(error), 'error')
+      get().pushToast('修改设置失败', 'error', errorMessage(error))
     }
   },
 
   clearCache: async () => {
     try {
-      const settings = await api.settings.set({ recent: [], lastRepo: null, windowBounds: null })
-      set({ settings, recent: [], lastRefresh: Date.now() })
+      const [settings] = await Promise.all([
+        api.settings.set({ recent: [], lastRepo: null, windowBounds: null }),
+        api.app.clearCache()
+      ])
+      set({ settings, recent: [], lastRefresh: Date.now(), notifications: [] })
       window.localStorage.removeItem('arbor.terminalWidth')
-      get().pushToast('已清空缓存：最近仓库、上次仓库与窗口位置', 'success')
+      window.localStorage.removeItem(NOTIFICATION_KEY)
+      saveNotifications([])
+      get().pushToast('已清空缓存与通知历史', 'success', '最近仓库、窗口位置、界面缓存和通知记录已清除')
     } catch (error) {
-      get().pushToast(errorMessage(error), 'error')
+      get().pushToast('清空缓存失败', 'error', errorMessage(error))
     }
   },
 
@@ -298,18 +346,57 @@ export const useAppStore = create<AppState>()((set, get) => ({
       const info = await api.updates.check()
       set({ updateInfo: info, updateChecking: false, lastUpdateCheck: Date.now() })
       if (info.error) {
-        if (!silent) get().pushToast(info.error, 'error')
+        if (!silent) get().pushToast('检查更新失败', 'error', info.error)
         return
       }
-      if (info.updateAvailable) {
-        get().pushToast(`发现新版本 ${info.latestVersion ?? info.latestTag ?? ''}`, 'info')
-      } else if (!silent) {
-        get().pushToast('已是最新版本', 'success')
+      // Update availability is shown by the dedicated bottom-right card, not a toast.
+      if (!info.updateAvailable && !silent) {
+        get().pushToast('已是最新版本', 'success', `当前 ${info.currentVersion}`)
       }
     } catch (error) {
       set({ updateChecking: false })
-      if (!silent) get().pushToast(errorMessage(error), 'error')
+      if (!silent) get().pushToast('检查更新失败', 'error', errorMessage(error))
     }
+  },
+
+  downloadUpdate: async () => {
+    const info = get().updateInfo
+    const tag = info?.latestTag
+    if (!tag || get().updateDownloading) return
+    set({ updateDownloading: true })
+    try {
+      const result = await api.updates.download(tag)
+      if (!result.ok) {
+        get().pushToast('自动更新失败', 'error', result.error ?? '下载或校验失败')
+      } else {
+        get().pushToast('安装包已通过校验，正在启动安装程序', 'success', result.path ?? '')
+        set({ updateDownloading: false })
+        return
+      }
+    } catch (error) {
+      get().pushToast('自动更新失败', 'error', errorMessage(error))
+    } finally {
+      set({ updateDownloading: false })
+    }
+  },
+
+  dismissUpdate: () => {
+    const tag = get().updateInfo?.latestTag
+    if (tag) {
+      window.localStorage.setItem('miaoxin.updateDismissed', tag)
+      set({ updateDismissedTag: tag })
+    }
+  },
+
+  markNotificationsRead: () => {
+    const notifications = get().notifications.map((item) => ({ ...item, read: true }))
+    set({ notifications })
+    saveNotifications(notifications)
+  },
+
+  clearNotifications: () => {
+    set({ notifications: [] })
+    saveNotifications([])
   },
 
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
@@ -319,9 +406,19 @@ export const useAppStore = create<AppState>()((set, get) => ({
   toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
   toggleTerminal: () => set((state) => ({ terminalOpen: !state.terminalOpen })),
 
-  pushToast: (message, kind = 'info') => {
+  pushToast: (message, kind = 'info', detail) => {
     const id = ++toastSeq
-    set((state) => ({ toasts: [...state.toasts.slice(-3), { id, message, kind }] }))
+    set((state) => {
+      const items: NotificationItem[] = [
+        { id, title: message, detail, kind, time: Date.now(), read: false },
+        ...state.notifications
+      ].slice(0, 200)
+      saveNotifications(items)
+      return {
+        notifications: items,
+        toasts: [...state.toasts.slice(-3), { id, message, kind }]
+      }
+    })
     window.setTimeout(() => get().dismissToast(id), kind === 'error' ? 6000 : 3500)
   },
 

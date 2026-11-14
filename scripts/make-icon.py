@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Generate Miaoxin Git GUI application icons from a single geometric definition.

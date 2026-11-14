@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { nativeTheme } from 'electron'
 import { store } from './store'
 import { getMainWindow } from './window'

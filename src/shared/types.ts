@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * Arbor — shared contract between the Electron main process, the preload bridge
  * and the renderer. This file is the single source of truth for every IPC
@@ -26,6 +27,17 @@ export interface UpdateCheckResult {
   totalTags: number
   checkedAt: number
   error?: string
+}
+
+export interface UpdateDownloadResult {
+  ok: boolean
+  path?: string
+  error?: string
+}
+
+export interface CacheInfo {
+  bytes: number
+  userData: string
 }
 
 export interface RecentRepo {
@@ -404,6 +416,8 @@ export interface ArborApi {
     clipboardWrite(text: string): Promise<void>
     clipboardRead(): Promise<string>
     openLogs(): Promise<void>
+    cacheInfo(): Promise<CacheInfo>
+    clearCache(): Promise<CacheInfo>
   }
   settings: {
     get(): Promise<Settings>
@@ -509,6 +523,7 @@ export interface ArborApi {
   updates: {
     check(): Promise<UpdateCheckResult>
     openTag(tag: string): Promise<void>
+    download(tag: string): Promise<UpdateDownloadResult>
   }
   events: {
     onProgress(cb: (e: ProgressEvent) => void): () => void

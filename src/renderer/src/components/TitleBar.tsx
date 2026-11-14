@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowDown,
@@ -23,6 +24,7 @@ import { relativeTime } from '@/lib/format'
 import { shortcutLabel } from '@/lib/useHotkeys'
 import { useAppStore } from '@/store/app'
 import { Button, IconButton } from './ui/Button'
+import { NotificationBell } from './NotificationBell'
 import { TextField } from './ui/Fields'
 import { Popover } from './ui/Overlay'
 import { Spinner, useToast } from './ui/Feedback'
@@ -329,6 +331,7 @@ export function TitleBar(): React.JSX.Element {
             />
           </div>
         ) : null}
+        <NotificationBell />
         <IconButton
           icon={SquareTerminal}
           label="Git Bash 命令行 (Ctrl+`)"

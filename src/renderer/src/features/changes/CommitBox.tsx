@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useLayoutEffect, useRef, useState } from 'react'
 import { api, errorMessage } from '@/lib/api'
 import { useHotkeys } from '@/lib/useHotkeys'

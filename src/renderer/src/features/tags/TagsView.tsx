@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useMemo, useState } from 'react'
 import { Copy, Download, MoreHorizontal, Plus, RefreshCw, Search, Tag, Trash2, Upload, X } from 'lucide-react'
 import type { TagInfo } from '@shared/types'

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useState } from 'react'
 import { Check, Copy, Info } from 'lucide-react'
 import { useAppStore } from '@/store/app'
@@ -60,6 +61,14 @@ export function SettingsDialog(): React.JSX.Element {
   const [sshOutput, setSshOutput] = useState('')
   const [sshPub, setSshPub] = useState('')
   const [clearConfirm, setClearConfirm] = useState(false)
+  const [cacheBytes, setCacheBytes] = useState<number | null>(null)
+
+  function formatBytes(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`
+  }
 
   async function copyText(value: string): Promise<void> {
     try {
@@ -108,6 +117,12 @@ export function SettingsDialog(): React.JSX.Element {
 
   useEffect(() => {
     if (open && tab === 'ssh') void loadSsh()
+    if (open && tab === 'behavior') {
+      void api.app
+        .cacheInfo()
+        .then((info) => setCacheBytes(info.bytes))
+        .catch(() => setCacheBytes(null))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, tab])
 
@@ -270,10 +285,18 @@ export function SettingsDialog(): React.JSX.Element {
                   ]}
                 />
               </SettingRow>
-              <SettingRow title="清空缓存" desc="移除最近打开的仓库、上次打开的仓库与窗口位置记录；不会删除仓库文件、主题和其他设置。">
-                <Button size="sm" onClick={() => setClearConfirm(true)}>
-                  清空缓存…
-                </Button>
+              <SettingRow
+                title="清空缓存"
+                desc="移除最近仓库、窗口位置、界面缓存与历史通知；不会删除仓库文件、主题和其他设置。"
+              >
+                <div className="arb-settings-inline">
+                  <span className="subtle num">
+                    当前缓存约 {cacheBytes === null ? '计算中…' : formatBytes(cacheBytes)}
+                  </span>
+                  <Button size="sm" onClick={() => setClearConfirm(true)}>
+                    清空缓存…
+                  </Button>
+                </div>
               </SettingRow>
               <div className="arb-settings-note">
                 <Info size={13} strokeWidth={1.8} />
@@ -486,11 +509,17 @@ export function SettingsDialog(): React.JSX.Element {
       <ConfirmDialog
         open={clearConfirm}
         title="清空缓存？"
-        description="将移除最近打开的仓库列表、上次打开的仓库记录和窗口位置。不会删除任何仓库文件、提交或应用设置。"
+        description="将移除最近仓库列表、上次仓库记录、窗口位置、界面缓存和历史通知。不会删除任何仓库文件、提交或应用设置。"
         confirmText="清空"
         danger
         onConfirm={() => {
-          void useAppStore.getState().clearCache()
+          void useAppStore
+            .getState()
+            .clearCache()
+            .then(async () => {
+              const info = await api.app.cacheInfo().catch(() => null)
+              setCacheBytes(info?.bytes ?? 0)
+            })
           setClearConfirm(false)
         }}
         onCancel={() => setClearConfirm(false)}

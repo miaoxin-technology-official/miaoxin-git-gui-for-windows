@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { ArrowDown, ArrowUp, GitBranch, Moon, Sun } from 'lucide-react'
 import { relativeTime } from '@/lib/format'
 import { useAppStore } from '@/store/app'

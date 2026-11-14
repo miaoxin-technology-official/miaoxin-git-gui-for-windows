@@ -1,5 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { app } from 'electron'
-import type { UpdateCheckResult } from '@shared/types'
+import { spawn } from 'node:child_process'
+import crypto from 'node:crypto'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import type { UpdateCheckResult, UpdateDownloadResult } from '@shared/types'
 
 const OWNER = 'miaoxin-technology-official'
 const REPO = 'miaoxin-git-gui-for-windows'
@@ -132,4 +138,83 @@ export async function checkForUpdates(preview: boolean): Promise<UpdateCheckResu
 
 export function releaseUrl(tag: string): string {
   return `https://github.com/${OWNER}/${REPO}/releases/tag/${encodeURIComponent(tag)}`
+}
+
+interface ReleaseAsset {
+  name: string
+  browser_download_url: string
+  digest?: string | null
+}
+
+function parseSha256(value: string | null | undefined): string | null {
+  if (!value) return null
+  const match = /(?:sha256:)?([a-f0-9]{64})/i.exec(value)
+  return match ? match[1].toLowerCase() : null
+}
+
+/**
+ * Download the installer for a tag, verify its SHA-256 against the digest that
+ * GitHub exposes for the release asset (or a checksum asset), then launch it.
+ */
+export async function downloadUpdate(tag: string): Promise<UpdateDownloadResult> {
+  const version = tag.replace(/^v/i, '')
+  const expectedName = `MiaoxinGitGUI-${version}-for-Windows-setup.exe`
+  try {
+    const releaseResponse = await fetch(
+      `https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${encodeURIComponent(tag)}`,
+      {
+        headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Miaoxin-Git-GUI' },
+        signal: AbortSignal.timeout(20000)
+      }
+    )
+    if (!releaseResponse.ok) {
+      return { ok: false, error: `无法读取 release（${releaseResponse.status}）` }
+    }
+    const release = (await releaseResponse.json()) as { assets?: ReleaseAsset[] }
+    const assets = Array.isArray(release.assets) ? release.assets : []
+    const asset =
+      assets.find((item) => item.name.toLowerCase() === expectedName.toLowerCase()) ??
+      assets.find((item) => /for-Windows-setup\.exe$/i.test(item.name))
+    if (!asset) return { ok: false, error: `release 中没有找到安装包 ${expectedName}` }
+
+    let expected = parseSha256(asset.digest)
+    if (!expected) {
+      const checksumAsset = assets.find((item) => /sha256|checksums?\.txt$/i.test(item.name))
+      if (checksumAsset) {
+        const checksumResponse = await fetch(checksumAsset.browser_download_url, {
+          headers: { 'User-Agent': 'Miaoxin-Git-GUI' },
+          signal: AbortSignal.timeout(20000)
+        })
+        if (checksumResponse.ok) {
+          const text = await checksumResponse.text()
+          for (const line of text.split(/\r?\n/)) {
+            if (!line.toLowerCase().includes(asset.name.toLowerCase())) continue
+            const match = /([a-f0-9]{64})/i.exec(line)
+            if (match) {
+              expected = match[1].toLowerCase()
+              break
+            }
+          }
+        }
+      }
+    }
+    if (!expected) {
+      return { ok: false, error: '发布页没有提供安装包 SHA-256，已取消自动更新，请手动下载。' }
+    }
+
+    const target = path.join(os.tmpdir(), expectedName)
+    const downloadResponse = await fetch(asset.browser_download_url, {
+      headers: { 'User-Agent': 'Miaoxin-Git-GUI' }
+    })
+    if (!downloadResponse.ok) return { ok: false, error: `下载失败（${downloadResponse.status}）` }
+    const buffer = Buffer.from(await downloadResponse.arrayBuffer())
+    const actual = crypto.createHash('sha256').update(buffer).digest('hex')
+    if (actual !== expected) return { ok: false, error: '安装包 SHA-256 校验失败，已取消安装。' }
+    fs.writeFileSync(target, buffer)
+    const child = spawn(target, [], { detached: true, stdio: 'ignore', windowsHide: false })
+    child.unref()
+    return { ok: true, path: target }
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
+  }
 }

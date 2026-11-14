@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { BranchInfo, ChangeSide, FileChange, FileStatus, StatusSnapshot } from '@shared/types'
 import { decodeSmart, splitBuffer } from './encoding'
 import { runGit, runGitOk } from './exec'

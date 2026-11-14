@@ -1,4 +1,4 @@
-# Miaoxin Git GUI
+# Miaoxin Git GUI for Windows
 
 面向 Windows 的本地优先 Git 桌面客户端。安装包内置 Git 2.47.1（MinGit），无需系统预先安装 Git，也不依赖系统 PATH；所有仓库操作直接调用本机（内置）git，不经过任何网络服务。
 界面默认浅色主题，可切换暖炭黑深色；密集行高与细线分隔，面向日常提交、审阅与分支操作。

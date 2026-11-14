@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { cn } from '@/lib/cn'
 
 /** Mark: a trunk, one branch, three nodes. Small enough for a 16px title bar. */

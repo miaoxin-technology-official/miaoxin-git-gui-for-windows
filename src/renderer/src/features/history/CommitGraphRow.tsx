@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { GRAPH_WIDTH, laneX, type GraphRow } from './graph'
 import '@/styles/graph.css'
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import type { ComponentType } from 'react'
 import { api } from './lib/api'
@@ -11,6 +12,7 @@ import { OperationBanner } from './components/OperationBanner'
 import { Welcome, CloneDialog, InitDialog } from './components/Welcome'
 import { CommandPalette } from './components/CommandPalette'
 import { SettingsDialog } from './components/SettingsDialog'
+import { UpdateBanner } from './components/UpdateBanner'
 import { Spinner, Toaster } from './components/ui/Feedback'
 import { useHotkeys } from './lib/useHotkeys'
 
@@ -195,6 +197,7 @@ export default function App(): React.JSX.Element {
       <SettingsDialog />
       <CloneDialog />
       <InitDialog />
+      <UpdateBanner />
       <Toaster />
     </div>
   )

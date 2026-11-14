@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { BranchInfo } from '@shared/types'
 import { decodeLines } from './encoding'
 import { assertSafeRef, NETWORK_TIMEOUT, runGit, runGitOk } from './exec'

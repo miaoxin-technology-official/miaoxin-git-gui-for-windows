@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { ButtonHTMLAttributes } from 'react'
 import { Loader2, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'

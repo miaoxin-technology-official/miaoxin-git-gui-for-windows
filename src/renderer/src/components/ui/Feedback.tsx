@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { AlertTriangle, Check, Info, Loader2, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useAppStore } from '@/store/app'

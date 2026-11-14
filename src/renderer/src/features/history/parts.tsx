@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { RefInfo } from '@shared/types'
 import { authorInitial } from '@/lib/format'
 import { cn } from '@/lib/cn'

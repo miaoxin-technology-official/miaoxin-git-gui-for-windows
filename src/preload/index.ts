@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { contextBridge, ipcRenderer } from 'electron'
 import { CH } from '@shared/channels'
 import type {
@@ -34,7 +35,9 @@ const api: ArborApi = {
     openExternal: (url: string) => ipcRenderer.invoke(CH.appOpenExternal, url),
     clipboardWrite: (text: string) => ipcRenderer.invoke(CH.appClipboardWrite, text),
     clipboardRead: () => ipcRenderer.invoke(CH.appClipboardRead),
-    openLogs: () => ipcRenderer.invoke(CH.appOpenLogs)
+    openLogs: () => ipcRenderer.invoke(CH.appOpenLogs),
+    cacheInfo: () => ipcRenderer.invoke(CH.appCacheInfo),
+    clearCache: () => ipcRenderer.invoke(CH.appClearCache)
   },
   settings: {
     get: () => ipcRenderer.invoke(CH.settingsGet),
@@ -154,7 +157,8 @@ const api: ArborApi = {
   },
   updates: {
     check: () => ipcRenderer.invoke(CH.updatesCheck),
-    openTag: (tag: string) => ipcRenderer.invoke(CH.updatesOpenTag, tag)
+    openTag: (tag: string) => ipcRenderer.invoke(CH.updatesOpenTag, tag),
+    download: (tag: string) => ipcRenderer.invoke(CH.updatesDownload, tag)
   },
   events: {
     onProgress: (cb: (e: ProgressEvent) => void) => on(CH.evtProgress, cb),

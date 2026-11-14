@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { HunkApplyArgs } from '@shared/types'
 import { splitBuffer } from './encoding'
 import { gitFailure, runGit } from './exec'

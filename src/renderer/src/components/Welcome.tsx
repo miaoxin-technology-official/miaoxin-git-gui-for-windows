@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { Clock, FolderGit2, FolderOpen, FolderPlus, GitBranch, Loader2, X } from 'lucide-react'
 import { useState } from 'react'
 import { api, errorMessage } from '@/lib/api'

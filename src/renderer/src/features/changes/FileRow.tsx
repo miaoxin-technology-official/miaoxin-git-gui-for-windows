@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import type { MouseEvent } from 'react'
 import type { ChangeSide } from '@shared/types'
 import { Check, Copy, EyeOff, FolderOpen, Minus, MoreHorizontal, Plus, RotateCcw, Trash2 } from 'lucide-react'

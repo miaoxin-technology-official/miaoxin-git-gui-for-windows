@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useState } from 'react'
 import { Archive, Copy, MoreHorizontal, RefreshCw, Trash2 } from 'lucide-react'
 import type { DiffResult, StashEntry } from '@shared/types'
