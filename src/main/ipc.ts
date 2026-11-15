@@ -21,6 +21,7 @@ import type {
 } from '@shared/types'
 import { createGitService, type ProgressSink } from './git'
 import { logsDir } from './log'
+import { takePendingOpenPath } from './open-path'
 import { store } from './store'
 import { applyTheme, effectiveTheme } from './theme'
 import { getMainWindow, sendToRenderer } from './window'
@@ -244,6 +245,7 @@ export function registerIpc(): void {
     clearAppCache()
     return { bytes: cacheBytes(), userData: app.getPath('userData') }
   })
+  handle(CH.appTakeOpenPath, () => takePendingOpenPath())
 
   /* -------------------------------------------------------- settings */
   handle(CH.settingsGet, () => store.get())

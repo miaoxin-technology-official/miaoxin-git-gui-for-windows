@@ -418,6 +418,7 @@ export interface ArborApi {
     openLogs(): Promise<void>
     cacheInfo(): Promise<CacheInfo>
     clearCache(): Promise<CacheInfo>
+    takeOpenPath(): Promise<string | null>
   }
   settings: {
     get(): Promise<Settings>
@@ -529,6 +530,7 @@ export interface ArborApi {
     onProgress(cb: (e: ProgressEvent) => void): () => void
     onRepoChanged(cb: (e: RepoChangeEvent) => void): () => void
     onSettingsChanged(cb: (s: Settings) => void): () => void
+    onOpenPath(cb: (path: string) => void): () => void
   }
 }
 

@@ -80,6 +80,20 @@ export default function App(): React.JSX.Element {
   }, [ready])
 
   useEffect(() => {
+    const off = api.events.onOpenPath((path) => {
+      void useAppStore.getState().openRepo(path, { silent: true })
+    })
+    return off
+  }, [])
+
+  useEffect(() => {
+    if (!ready) return
+    void api.app.takeOpenPath().then((path) => {
+      if (path) void useAppStore.getState().openRepo(path, { silent: true })
+    })
+  }, [ready])
+
+  useEffect(() => {
     window.localStorage.setItem('arbor.terminalWidth', String(terminalWidth))
   }, [terminalWidth])
 

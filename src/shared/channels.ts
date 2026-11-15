@@ -12,6 +12,7 @@ export const CH = {
   appOpenLogs: 'app:open-logs',
   appCacheInfo: 'app:cache-info',
   appClearCache: 'app:clear-cache',
+  appTakeOpenPath: 'app:take-open-path',
 
   settingsGet: 'settings:get',
   settingsSet: 'settings:set',
@@ -105,5 +106,6 @@ export const CH = {
 
   evtProgress: 'event:progress',
   evtRepoChanged: 'event:repo-changed',
-  evtSettingsChanged: 'event:settings-changed'
+  evtSettingsChanged: 'event:settings-changed',
+  evtOpenPath: 'event:open-path'
 } as const

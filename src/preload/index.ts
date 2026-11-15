@@ -37,7 +37,8 @@ const api: ArborApi = {
     clipboardRead: () => ipcRenderer.invoke(CH.appClipboardRead),
     openLogs: () => ipcRenderer.invoke(CH.appOpenLogs),
     cacheInfo: () => ipcRenderer.invoke(CH.appCacheInfo),
-    clearCache: () => ipcRenderer.invoke(CH.appClearCache)
+    clearCache: () => ipcRenderer.invoke(CH.appClearCache),
+    takeOpenPath: () => ipcRenderer.invoke(CH.appTakeOpenPath)
   },
   settings: {
     get: () => ipcRenderer.invoke(CH.settingsGet),
@@ -163,7 +164,8 @@ const api: ArborApi = {
   events: {
     onProgress: (cb: (e: ProgressEvent) => void) => on(CH.evtProgress, cb),
     onRepoChanged: (cb: (e: RepoChangeEvent) => void) => on(CH.evtRepoChanged, cb),
-    onSettingsChanged: (cb: (s: Settings) => void) => on(CH.evtSettingsChanged, cb)
+    onSettingsChanged: (cb: (s: Settings) => void) => on(CH.evtSettingsChanged, cb),
+    onOpenPath: (cb: (path: string) => void) => on(CH.evtOpenPath, cb)
   }
 }
 

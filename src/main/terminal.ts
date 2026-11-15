@@ -215,6 +215,17 @@ class TerminalManager {
     const child = this.child
     this.child = null
     if (!child) return
+    if (child.pid) {
+      try {
+        const killer = spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], {
+          windowsHide: true,
+          stdio: 'ignore'
+        })
+        killer.on('error', () => undefined)
+      } catch {
+        /* ignore */
+      }
+    }
     try {
       child.stdin.write('exit\n')
     } catch {
